@@ -17,7 +17,7 @@ def normalize_text(text: str) -> str:
 
 def normalize_question(question: str) -> str:
     text = normalize_text(question).lower()
-    text = re.sub(r"["'“”‘’\[\]]", "", text)
+    text = re.sub(r"[\"'“”‘’\[\]]", "", text)
     text = re.sub(r"\?+$", "", text)
     text = text.strip()
     if not text:

@@ -2,23 +2,27 @@
 name = "medqa-golden-dataset"
 version = "0.1.0"
 description = "Golden dataset and knowledge database pipeline for a medical QA chatbot using MedQuAD."
-authors = ["Medical QA Architecture Team <team@example.com>"]
+authors = [
+    { name = "Medical QA Architecture Team", email = "tkjayaram9@gmail.com" }
+]
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 keywords = ["medqa", "dataset", "knowledge-base", "ETL", "medical chatbot"]
 
-[project.dependencies]
-pandas = ">=2.0"
-pyarrow = ">=12.0"
-python-dotenv = ">=1.0"
-pytest = { version = ">=8.0", optional = true }
+dependencies = [
+    "pandas>=2.0",
+    "pyarrow>=12.0",
+    "python-dotenv>=1.0"
+]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pytest>=8.0"
+]
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

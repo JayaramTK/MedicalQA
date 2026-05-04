@@ -10,9 +10,12 @@ from .database import KnowledgeDatabase
 def save_golden_dataset(df: pd.DataFrame, processed_path: Path = None) -> Path:
     if processed_path is None:
         processed_path = DEFAULT_CONFIG["processed_path"]
+        processed_csv_path = DEFAULT_CONFIG["processed_csv_path"]
 
     processed_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(processed_path, index=False)
+    df.to_csv(processed_csv_path, index = False)
+
     return processed_path
 
 
