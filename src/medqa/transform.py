@@ -3,7 +3,8 @@ from typing import Tuple
 
 import pandas as pd
 
-from .text import build_dedup_key, extract_url, normalize_question, normalize_text
+from .config import SOURCE_URL_MAP
+from .text import build_dedup_key, extract_url, normalize_question, normalize_text, resolve_source_url
 
 # Difficulty thresholds (word counts)
 _Q_SHORT = 10   # <= short question
@@ -51,23 +52,47 @@ def clean_medquad(df: pd.DataFrame) -> pd.DataFrame:
 
     df = df[df["answer"].apply(_alpha_ratio) >= 0.70]
 
-    # Remove duplicate questions (keep first occurrence)
+    # Remove rows with missing focus_area
+    df = df[df["focus_area"].str.len() > 0]
+
+    # Deduplicate per (focus_area, normalized_question) — keep longest answer
     df["normalized_question"] = df["question"].map(normalize_question)
-    df = df.drop_duplicates(subset=["normalized_question"], keep="first")
+    df = df.sort_values("answer", key=lambda s: s.str.len(), ascending=False)
+    df = df.drop_duplicates(subset=["focus_area", "normalized_question"], keep="first")
 
     df = df.reset_index(drop=True)
     return df
 
 
 # ---------------------------------------------------------------------------
-# Step 2 – URL filter
+# Step 2 – Website link filter
 # ---------------------------------------------------------------------------
 
 def filter_url_rows(df: pd.DataFrame) -> pd.DataFrame:
-    """Keep only rows that contain a valid http/https URL in the answer.
-    Extracts the first URL as context_source_id."""
+    """Keep only rows that contain a literal http/https URL in the answer text.
+    Saved as an intermediate reference file — not the golden sampling pool."""
     df = df.copy()
     df["context_source_id"] = df["answer"].apply(extract_url)
+    df = df[df["context_source_id"].str.len() > 0]
+    df = df.reset_index(drop=True)
+    return df
+
+
+def resolve_website_links(df: pd.DataFrame) -> pd.DataFrame:
+    """Populate context_source_id for every row.
+
+    Priority per row:
+      1. Literal URL extracted from the answer text.
+      2. Authoritative website URL looked up from the source institution name.
+
+    Rows whose source is not in SOURCE_URL_MAP and whose answer contains no
+    URL are dropped (kept only if a website link can be resolved).
+    """
+    df = df.copy()
+    df["context_source_id"] = df.apply(
+        lambda r: resolve_source_url(r["answer"], r["source"], SOURCE_URL_MAP),
+        axis=1,
+    )
     df = df[df["context_source_id"].str.len() > 0]
     df = df.reset_index(drop=True)
     return df
@@ -110,41 +135,60 @@ def enrich_medquad(df: pd.DataFrame) -> pd.DataFrame:
 
 def sample_golden_dataset(
     df: pd.DataFrame,
-    top_n: int = TOP_N_FOCUS_AREAS,
+    target_rows: int = 100,
     rows_per_area: int = ROWS_PER_FOCUS_AREA,
     random_state: int = 42,
 ) -> pd.DataFrame:
-    """Sample rows_per_area rows from each of the top_n focus areas,
-    maximising question_type diversity within each area."""
+    """Collect exactly target_rows UNIQUE-question rows from the top focus areas.
 
-    top_areas = (
-        df["focus_area"].value_counts().head(top_n).index.tolist()
-    )
-    filtered = df[df["focus_area"].isin(top_areas)].copy()
+    Iterates through focus areas (most rows first). For each area:
+      1. Pick one row per question_type (rarest type first — diversity pass).
+      2. Fill remaining slots from leftover rows, no replacement.
+      3. Cap at min(available_unique_rows, rows_per_area).
+    Stops as soon as the running total reaches target_rows.
+    """
+    # Sort areas by available unique-question row count, descending
+    area_counts = df["focus_area"].value_counts()
+    areas_in_order = area_counts.index.tolist()
 
-    parts = []
-    for area in top_areas:
-        area_df = filtered[filtered["focus_area"] == area]
+    parts: list[pd.DataFrame] = []
+    collected = 0
 
-        # One row per question_type (for diversity) — avoid groupby.apply NaN bug
-        diverse_rows = []
-        for _, group in area_df.groupby("question_type", sort=False):
-            diverse_rows.append(group.sample(1, random_state=random_state))
-        diverse = pd.concat(diverse_rows) if diverse_rows else area_df.iloc[:0]
+    for area in areas_in_order:
+        if collected >= target_rows:
+            break
 
-        # Fill up to rows_per_area if we have more data
-        if len(diverse) < rows_per_area:
-            remaining = area_df.loc[~area_df.index.isin(diverse.index)]
-            still_needed = rows_per_area - len(diverse)
-            if len(remaining) >= still_needed:
-                extra = remaining.sample(still_needed, random_state=random_state)
-            else:
-                extra = area_df.sample(
-                    still_needed, replace=True, random_state=random_state
+        area_df = df[df["focus_area"] == area].copy()
+        need = min(len(area_df), rows_per_area, target_rows - collected)
+
+        # Pass 1: one row per question_type (rarest first)
+        type_order = (
+            area_df["question_type"].value_counts().index.tolist()[::-1]
+        )
+        selected_idx: list = []
+        for qtype in type_order:
+            candidates = area_df[
+                (area_df["question_type"] == qtype)
+                & (~area_df.index.isin(selected_idx))
+            ]
+            if not candidates.empty:
+                selected_idx.append(
+                    candidates.sample(1, random_state=random_state).index[0]
                 )
-            diverse = pd.concat([diverse, extra])
+            if len(selected_idx) >= need:
+                break
 
-        parts.append(diverse.head(rows_per_area))
+        # Pass 2: fill remaining slots without replacement
+        if len(selected_idx) < need:
+            remaining = area_df[~area_df.index.isin(selected_idx)]
+            extra = remaining.sample(
+                min(need - len(selected_idx), len(remaining)),
+                random_state=random_state,
+            )
+            selected_idx.extend(extra.index.tolist())
+
+        parts.append(area_df.loc[selected_idx[:need]])
+        collected += need
 
     sampled = pd.concat(parts).reset_index(drop=True)
 

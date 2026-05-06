@@ -42,3 +42,16 @@ def extract_url(text: str) -> str:
     if not match:
         return ""
     return match.group(0).rstrip(".,;:")
+
+
+def resolve_source_url(answer: str, source: str, source_url_map: dict) -> str:
+    """Return a website link for a row.
+
+    Priority:
+      1. Literal http/https URL extracted from the answer text.
+      2. URL looked up from the source institution name via source_url_map.
+    """
+    url = extract_url(answer)
+    if url:
+        return url
+    return source_url_map.get(source, "")
