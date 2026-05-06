@@ -5,8 +5,12 @@ __pycache__/
 .env
 .env.*
 .DS_Store
+data/raw/*
+!data/raw/.gitkeep
 data/processed/*
+!data/processed/.gitkeep
 data/knowledge/*
+!data/knowledge/.gitkeep
 *.sqlite
 *.db
 .ipynb_checkpoints/
