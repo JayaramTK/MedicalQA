@@ -48,6 +48,17 @@ def save_csv(df: pd.DataFrame, target_path: Path) -> Path:
     return target_path
 
 
+def save_knowledge_base(df: pd.DataFrame) -> tuple[Path, Path]:
+    """Save the knowledge base as both CSV and Parquet inside data/knowledge/."""
+    kb_dir = DEFAULT_CONFIG["knowledge_db_path"].parent
+    csv_path     = kb_dir / "knowledge_base.csv"
+    parquet_path = kb_dir / "knowledge_base.parquet"
+    kb_dir.mkdir(parents=True, exist_ok=True)
+    df.to_csv(csv_path, index=False)
+    df.to_parquet(parquet_path, index=False)
+    return csv_path, parquet_path
+
+
 def build_knowledge_database(df: pd.DataFrame, db_path: Path = None) -> Path:
     if db_path is None:
         db_path = DEFAULT_CONFIG["knowledge_db_path"]

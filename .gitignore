@@ -13,6 +13,8 @@ data/processed/*
 !data/processed/*.parquet
 data/knowledge/*
 !data/knowledge/.gitkeep
+!data/knowledge/*.csv
+!data/knowledge/*.parquet
 *.sqlite
 *.db
 .ipynb_checkpoints/
