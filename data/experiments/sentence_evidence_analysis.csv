@@ -1,0 +1,4 @@
+experiment_id,system,evidence_type,evidence_unit,top_evidence_sentences,faithfulness,context_precision,evidence_granularity_score,trust_score,key_observation
+E02,Basic RAG,Chunk-level evidence,Full chunk,0,0.91,1.0,0.0,0.8336,"Uses full retrieved chunks as context. Evidence is coarse-grained (EGS=0.00), so the model must filter relevant information internally. Highest faithfulness among chunk-level systems."
+E03,RAG with Sentence Evidence,Sentence-level evidence,Sentence,1,0.55,1.0,0.9854,0.7331,Extracts the top-1 most relevant sentence(s) before answering. EGS=0.99 reflects tight evidence focus. Faithfulness -0.36 vs chunk-level baseline. Higher precision at the cost of narrower context.
+E03,RAG with Sentence Evidence,Sentence-level evidence,Sentence,3,0.61,1.0,0.9482,0.7369,Extracts the top-3 most relevant sentence(s) before answering. EGS=0.95 reflects tight evidence focus. Faithfulness -0.30 vs chunk-level baseline. Balances focus with broader coverage.
