@@ -1,4 +1,4 @@
-# Medical Question and Answer Chatbot
+# Healthcare GenAI system for Hallucination reduction
 
 This repository sets up a golden dataset and knowledge database for a medical QA chatbot based on the MedQuAD dataset.
 
