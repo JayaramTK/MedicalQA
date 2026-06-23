@@ -1,0 +1,11 @@
+experiment_id,system,threshold,total_questions,answered_questions,refused_questions,correct_refusals,wrong_refusals,hallucination_rate,refusal_accuracy,trust_score,key_observation
+E04,RAG with Uncertainty Handling,0.0,10,10,0,0,0,0.12,0.0,0.652,"At threshold=0.0, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.12. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.2,10,10,0,0,0,0.12,0.0,0.652,"At threshold=0.2, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.12. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.3,10,10,0,0,0,0.12,0.0,0.652,"At threshold=0.3, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.12. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.5,10,10,0,0,0,0.12,0.0,0.652,"At threshold=0.5, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.12. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.6,10,10,0,0,0,0.13,0.0,0.648,"At threshold=0.6, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.13. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.65,10,10,0,0,0,0.13,0.0,0.648,"At threshold=0.65, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.13. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.7,10,10,0,0,0,0.13,0.0,0.648,"At threshold=0.7, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.13. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.8,10,10,0,0,0,0.12,0.0,0.652,"At threshold=0.8, all 10 questions are answered (retrieval scores exceed threshold). Hallucination rate: 0.12. No refusals triggered."
+E04,RAG with Uncertainty Handling,0.85,10,7,3,1,2,0.0571,0.3333,0.6871,Threshold=0.85 refuses 3/10 questions (30% refusal rate). Coverage: 70%. Correct refusals: 1/3 (accuracy=0.33). Hallucination rate on answered: 0.06. Balances coverage and confidence.
+E04,RAG with Uncertainty Handling,0.9,10,1,9,1,8,0.0,0.1111,0.4633,Threshold=0.9 refuses 9/10 questions (90% refusal rate). Coverage: 10%. Correct refusals: 1/9 (accuracy=0.11). Hallucination rate on answered: 0.00. Stricter threshold reduces hallucination but limits coverage.

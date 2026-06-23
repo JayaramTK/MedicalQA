@@ -1,0 +1,6 @@
+experiment_id,system_type,llm,embedding_model,vector_db,chunk_size,chunk_overlap,faithfulness,context_relevance,context_precision,answer_relevance,hallucination_rate,trust_score
+E01,Baseline LLM without RAG,llama-3.3-70b-versatile,,,0,0,0.79,0.0,0.0,0.763,0.21,0.7765
+E02,Basic RAG,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.89,0.6792,1.0,0.8115,0.11,0.8463
+E03,RAG with Sentence Evidence,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.7,0.6792,1.0,0.7783,0.3,0.7793
+E04,RAG with Uncertainty Handling,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.89,0.6792,1.0,0.7455,0.11,0.8265
+E05,Final Combined RAG System,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.87,0.6512,1.0,0.7453,0.13,0.8148

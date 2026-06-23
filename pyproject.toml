@@ -1,0 +1,26 @@
+[project]
+name = "medqa-rag-evaluation"
+version = "1.0.0"
+description = "End-to-end RAG evaluation pipeline for medical QA using MedQuAD."
+authors = [
+    { name = "Medical QA Architecture Team", email = "tkjayaram9@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["medqa", "rag", "evaluation", "llm", "medical-qa"]
+
+dependencies = [
+    "pandas>=2.0",
+    "pyarrow>=12.0",
+    "python-dotenv>=1.0",
+    "groq>=0.8.0",
+    "sentence-transformers>=3.0.0",
+    "chromadb>=0.5.0",
+    "numpy>=1.24.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]

@@ -1,0 +1,13 @@
+experiment_id,system_type,prompt_type,llm,embedding_model,vector_db,chunk_size,chunk_overlap,faithfulness,context_relevance,context_precision,answer_relevance,hallucination_rate,trust_score
+E01,Baseline LLM without RAG,,llama-3.3-70b-versatile,None,None,0,0,0.79,0.0,0.0,0.763,0.21,0.7765
+E01,Baseline LLM without RAG,zero_shot,llama-3.3-70b-versatile,,,0,0,0.77,0.0,0.0,0.7886,0.23,0.7793
+E01,Baseline LLM without RAG,few_shot,llama-3.3-70b-versatile,,,0,0,0.85,0.0,0.0,0.7941,0.15,0.822
+E01,Baseline LLM without RAG,cot,llama-3.3-70b-versatile,,,0,0,0.73,0.0,0.0,0.7948,0.27,0.7624
+E01,Baseline LLM without RAG,tot,llama-3.3-70b-versatile,None,None,0,0,0.88,0.0,0.0,0.7577,0.12,0.8188
+E01,Baseline LLM without RAG,self_consistency,llama-3.3-70b-versatile,None,None,0,0,0.74,0.0,0.0,0.7781,0.26,0.759
+E02,Basic RAG,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.89,0.6792,1.0,0.8115,0.11,0.8463
+E02,Sparse RAG,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.79,0.5869,1.0,0.8081,0.21,0.7968
+E02,Hybrid RAG,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.9,0.6566,0.0,0.8019,0.1,0.6419
+E03,RAG with Sentence Evidence,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.7,0.6792,1.0,0.7783,0.3,0.7793
+E04,RAG with Uncertainty Handling,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.89,0.6792,1.0,0.7455,0.11,0.8265
+E05,Final Combined RAG System,,llama-3.3-70b-versatile,all-MiniLM-L6-v2,ChromaDB,500,100,0.87,0.6512,1.0,0.7453,0.13,0.8148
